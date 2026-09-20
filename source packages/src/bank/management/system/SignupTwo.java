@@ -4,23 +4,23 @@ import java.awt.*;
 import java.awt.event.*;
 //import java.awt.event.ActionListener; we have already imported the above line
 import java.util.*;
-import com.toedter.calendar.JDateChooser;
 public class SignupTwo extends JFrame implements ActionListener {
-//    long appno;
-    JTextField nameTextField, fnameTextField,phoneTextField,mailTextField, addrTextField, panTextField, aadhaarTextField, ctTextField, pinTextField, stateTextField, countryTextField;
+    long random;
+    JTextField panTextField, aadhaarTextField;
     JComboBox relg,catg, incomee, educated, occup;
-    JRadioButton seniorcyes,seniorcno, existing,notexisting, male, female, other, married, unmarried, dontsay;
+    JRadioButton seniorcyes,seniorcno, existing,notexisting;
     JButton next;
-    JDateChooser dobField;
-    long formno;
-    SignupTwo() {
+    String formno;
+
+    SignupTwo(String formno) {
+        this.formno=formno;
         setLayout(null);
 
         setTitle("Page 2: NEW ACCOUNT APPLICATION FORM");
 
         JLabel additionalDetails = new JLabel("Page 2: Additional Details");
         additionalDetails.setFont(new Font("Raleway",Font.BOLD, 30));
-        additionalDetails.setBounds(290,80, 400,25); //only works when setLayout(null)
+        additionalDetails.setBounds(290,70, 400,35); //only works when setLayout(null)
         add(additionalDetails);
 
         JLabel religion = new JLabel("Religion:");
@@ -91,7 +91,7 @@ public class SignupTwo extends JFrame implements ActionListener {
         add(aadhaar);
         aadhaarTextField = new JTextField();
         aadhaarTextField.setFont(new Font("Raleway",Font.BOLD, 14));
-        aadhaarTextField.setBounds(300,390,400,25);
+        aadhaarTextField.setBounds(300,440,400,25);
         aadhaar.setBackground(Color.WHITE);
         add(aadhaarTextField);
 
@@ -101,62 +101,37 @@ public class SignupTwo extends JFrame implements ActionListener {
         add(SrCitizen);
         seniorcyes = new JRadioButton("Yes");
         seniorcyes.setFont(new Font("Raleway",Font.BOLD, 14));
-        seniorcyes.setBounds(300,490,400,25);
+        seniorcyes.setBounds(300,490,60,25);
         seniorcyes.setBackground(Color.WHITE);
         add(seniorcyes);
         seniorcno = new JRadioButton("No");
         seniorcno.setFont(new Font("Raleway",Font.BOLD, 14));
-        seniorcno.setBounds(380,490,400,25);
+        seniorcno.setBounds(380,490,60,25);
         seniorcno.setBackground(Color.WHITE);
         add(seniorcno);
         ButtonGroup senior=new ButtonGroup();
         senior.add(seniorcyes);
         senior.add(seniorcno);
 
-        JLabel existac = new JLabel("Have any existing account?");
+        JLabel existac = new JLabel("Have existing A/C?");
         existac.setFont(new Font("Raleway",Font.BOLD, 18));
         existac.setBounds(100,540,200,25);
         add(existac);
         existing = new JRadioButton("Yes");
         existing.setFont(new Font("Raleway",Font.BOLD, 14));
-        existing.setBounds(300,540,400,25);
+        existing.setBounds(300,540,60,25);
         existing.setBackground(Color.WHITE);
         add(existing);
         notexisting = new JRadioButton("No");
         notexisting.setFont(new Font("Raleway",Font.BOLD, 14));
-        notexisting.setBounds(380,540,400,25);
+        notexisting.setBounds(380,540,60,25);
         notexisting.setBackground(Color.WHITE);
         add(notexisting);
         ButtonGroup existsButton=new ButtonGroup();
         existsButton.add(existing);
         existsButton.add(notexisting);
 
-        JLabel pincode = new JLabel("Pincode:");
-        pincode.setFont(new Font("Raleway",Font.BOLD, 18));
-        pincode.setBounds(100,590,200,25);
-        add(pincode);
-        pinTextField = new JTextField();
-        pinTextField.setFont(new Font("Raleway",Font.BOLD, 14));
-        pinTextField.setBounds(300,590,400,25);
-        add(pinTextField);
 
-        JLabel state = new JLabel("State:");
-        state.setFont(new Font("Raleway",Font.BOLD, 18));
-        state.setBounds(100,640,200,30);
-        add(state);
-        stateTextField = new JTextField();
-        stateTextField.setFont(new Font("Raleway",Font.BOLD, 14));
-        stateTextField.setBounds(300,640,400,30);
-        add(stateTextField);
-
-        JLabel country = new JLabel("Country:");
-        country.setFont(new Font("Raleway",Font.BOLD, 18));
-        country.setBounds(100,690,200,25);
-        add(country);
-        countryTextField = new JTextField();
-        countryTextField.setFont(new Font("Raleway",Font.BOLD, 14));
-        countryTextField.setBounds(300,690,400,25);
-        add(countryTextField);
 
         next= new JButton("Next");
         next.setBackground(Color.BLACK);
@@ -175,42 +150,40 @@ public class SignupTwo extends JFrame implements ActionListener {
     }
     public void actionPerformed(ActionEvent aet){
 //        String formno = ""+appno;  //long
-        String name=nameTextField.getText(); //setText
-        String fname= fnameTextField.getText();
-        String dob = ((JTextField) dobField.getDateEditor().getUiComponent()).getText();
-        String gender= null;
-        if(male.isSelected()){
-            gender ="Male";
-        }else if(female.isSelected()){
-            gender= "Female";
-        }else if(other.isSelected()){
-            gender="Prefer not to say";
+//        String name=nameTextField.getText(); //setText
+//        String fname= fnameTextField.getText();
+        String religion=(String) relg.getSelectedItem();
+        String category= (String) catg.getSelectedItem();
+        String education= (String) educated.getSelectedItem();
+        String occupation=(String) occup.getSelectedItem();
+        String income=(String) incomee.getSelectedItem();
+
+//        String dob = ((JTextField) dobField.getDateEditor().getUiComponent()).getText();
+        String seniorC= null;
+        if(seniorcyes.isSelected()){
+            seniorC ="Yes";
+        }else if(seniorcno.isSelected()) {
+            seniorC = "No";
         }
 
-        String phone=phoneTextField.getText();
-        String email=mailTextField.getText();
-        String marital= null;
-        if(married.isSelected()){
-            marital="Married";
-        }else if(unmarried.isSelected()){
-            marital="Unmarried";
-        }else if(dontsay.isSelected()){
-            marital="Other";
+        String existingAc=null;
+        if(existing.isSelected()){
+            existingAc="Yes";
         }
-        String address=addrTextField.getText();
-        String city=ctTextField.getText();
-        String state= stateTextField.getText();
-        String pin= pinTextField.getText();
-        String country= countryTextField.getText();
+        else if(notexisting.isSelected()){
+            existingAc="No";
+        }
+
+        String aadhar=aadhaarTextField.getText();
+        String pan=panTextField.getText();
 
         try{
-            if(name.equals("")){
-                JOptionPane.showMessageDialog(null, "Name is a required field");
-            }
-            else{
+            {
                 conn c= new conn();
-                String query= "insert into signup values ('"+formno+"', '"+name+"','"+fname+"','"+dob+"','"+gender+"','"+phone+"','"+email+"','"+marital+"','"+address+"','"+city+"','"+pin+"','"+state+"','"+country+"')";
+                String query= "insert into signuptwo values ('"+formno+"','"+religion+"', '"+category+"','"+education+"','"+occupation+"','"+income+"','"+aadhar+"','"+pan+"','"+seniorC+"','"+existingAc+"')";
                 c.s.executeUpdate(query);
+
+                //next signup page
             }
         }catch(Exception e){
             System.out.println(e);
@@ -219,6 +192,6 @@ public class SignupTwo extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
-        new SignupTwo();
+        new SignupTwo("");
     }
 }
