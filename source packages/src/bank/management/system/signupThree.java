@@ -1,22 +1,29 @@
 package bank.management.system;
 
+import com.formdev.flatlaf.FlatDarkLaf;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
+import java.util.Random;
 
-public class signupThree extends JFrame{
+public class signupThree extends JFrame implements ActionListener{
     JRadioButton Saving, current, fd, recurring;
     JCheckBox c1,c2,c3,c4,c5,c6,c7;
     JButton submit, cancel;
-    signupThree(){
+    JLabel acType;
+    String formno;
+    JCheckBox c8;
+    signupThree(String formno){
+        this.formno=formno;
         setLayout(null);
         JLabel l1= new JLabel("Page 3: Account details:");
         l1.setFont(new Font("Raleway", Font.BOLD, 22));
         l1.setBounds(250,40,400,40);
         add(l1);
-        JLabel type= new JLabel("Account Type:");
-        type.setFont(new Font("Raleway", Font.BOLD,20));
-        type.setBounds(100,120,150,40);
-        add(type);
+        acType= new JLabel("Account Type:");
+        acType.setFont(new Font("Raleway", Font.BOLD,20));
+        acType.setBounds(100,120,150,40);
+        add(acType);
 
         Saving =new JRadioButton("Saving Account");
         Saving.setFont(new Font("Raleway", Font.BOLD, 16));
@@ -97,7 +104,7 @@ public class signupThree extends JFrame{
         c7.setBounds(100,540,200,30);
         add(c7);
 
-        JCheckBox c8= new JCheckBox("I hereby declare that the given details are true to the extent of my knowledge.");
+        c8= new JCheckBox("I hereby declare that the given details are true to the extent of my knowledge.");
         c8.setFont(new Font("Raleway",Font.BOLD, 14));
         c8.setBounds(100,620,600,20);
         add(c8);
@@ -107,6 +114,7 @@ public class signupThree extends JFrame{
         submit.setBackground(Color.BLACK);
         submit.setBounds(640,700,100,30);
         submit.setFont(new Font("Raleway", Font.BOLD,14));
+        submit.addActionListener(this);
         add(submit);
 
         cancel= new JButton("Cancel");
@@ -114,15 +122,84 @@ public class signupThree extends JFrame{
         cancel.setBackground(Color.BLACK);
         cancel.setBounds(520,700,100,30);
         cancel.setFont(new Font("Raleway", Font.BOLD,14));
+        cancel.addActionListener(this);
         add(cancel);
-
 
         setSize(820,800);
         setLocation(350,5);
         setVisible(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
+    }
+    public void actionPerformed(ActionEvent ae){
+        String AccType="";
+        if(ae.getSource()==cancel){
+            setVisible(false);
+            new login().setVisible(true);
+            //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            return;
+        }
+        if(ae.getSource()==submit){
+            if(Saving.isSelected()){
+                AccType="Saving Account";
+            } else if(current.isSelected()){
+                AccType="Current Account";
+            } else if(fd.isSelected()){
+                AccType="Fixed Deposit Account";
+            } else if(recurring.isSelected()){
+                AccType="Recurring Account";
+            }
+        }
+        Random ran=new Random();
+        String cardnumber=""+ (Math.abs((ran.nextLong()%900000L))+3799159000100000L);
+        String pinno=""+Math.abs((ran.nextLong()%9000L)+1000L);
+        String facility="";
+        if(c1.isSelected()){
+            facility = facility+" Debit card";
+        }if(c2.isSelected()){
+            facility= facility+" Credit card";
+        }if(c3.isSelected()){
+            facility= facility+" Mobile Banking";
+        } if(c4.isSelected()){
+            facility= facility+" Internet Banking";
+        } if(c5.isSelected()){
+            facility= facility+" Passbook";
+        } if(c6.isSelected()){
+            facility= facility+" Cheque Book";
+        } if(c7.isSelected()){
+            facility= facility+" Email & SMS ALerts";
+        }
+
+        try {
+            if(AccType.equals("")){
+                JOptionPane.showMessageDialog(null,"Account type is required");
+            } else if (!c8.isSelected()) {
+                JOptionPane.showMessageDialog(null, "Please check the declaration to proceed.");
+            } else{
+                conn c=new conn();
+                String query1= "INSERT INTO signupthree (Formno, AccountType, cardNumber, pin_no, servicesRequired) VALUES ('" + formno + "', '" + AccType+ "', '" + cardnumber + "', '" + pinno + "', '" + facility + "')";
+                String query2= "insert into login values('"+formno+"', '"+cardnumber+"', '"+pinno+"')";
+                System.out.println("Executed: " + query1);
+                c.s.executeUpdate(query1);
+                c.s.executeUpdate(query2);
+
+                JOptionPane.showMessageDialog(null, "Card Number: "+cardnumber+ " \n Pin Number: "+pinno);
+                setVisible(false);
+                ///next page
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
 
     }
     public static void main(String args[]){
-        new signupThree();
+        try {
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+        } catch (Exception ex) {
+            System.err.println("Failed to initialize flatLaF UI");
+        }
+        new signupThree("");
     }
 }

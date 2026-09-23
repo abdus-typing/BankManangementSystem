@@ -11,7 +11,7 @@ public class login extends JFrame implements ActionListener{
     JTextField cardTextField; JPasswordField pinTextField;
 
     login(){
-        setTitle("atm frame");
+        setTitle("ATM frame");
         setLayout(null);
         ImageIcon i1=new ImageIcon(ClassLoader.getSystemResource("logos/atmlogo.jpg"));
         Image i2= i1.getImage().getScaledInstance(100,100, Image.SCALE_DEFAULT);

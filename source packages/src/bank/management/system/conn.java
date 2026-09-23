@@ -20,7 +20,7 @@ public class conn {
             c=DriverManager.getConnection(url,user,password);
             s= c.createStatement();
         }catch(Exception e){
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 }
