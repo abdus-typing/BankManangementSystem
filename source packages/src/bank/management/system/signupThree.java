@@ -172,7 +172,7 @@ public class signupThree extends JFrame implements ActionListener{
         }
 
         try {
-            if(AccType.equals("")){
+            if(AccType.isEmpty()){
                 JOptionPane.showMessageDialog(null,"Account type is required");
             } else if (!c8.isSelected()) {
                 JOptionPane.showMessageDialog(null, "Please check the declaration to proceed.");
@@ -186,13 +186,11 @@ public class signupThree extends JFrame implements ActionListener{
 
                 JOptionPane.showMessageDialog(null, "Card Number: "+cardnumber+ " \n Pin Number: "+pinno);
                 setVisible(false);
-                ///next page
+                new Deposit(cardnumber,pinno).setVisible(false);
             }
         }catch(Exception e){
-            e.printStackTrace();
+            System.out.println(e);
         }
-
-
     }
     public static void main(String args[]){
         try {

@@ -3,6 +3,8 @@ package bank.management.system;
 import javax.swing.*;// swing -> java's gui widget toolkit for building desktop windows
 import java.awt.*; //abstract window toolkit
 import java.awt.event.*;
+import java.sql.*;
+
 // agar hamare pass koi interface hai aur hame uss interface ko implement krwate hai to uss  interface ke andr jitne bhi method hote hai usko hme ovrride karana parta hai
 public class login extends JFrame implements ActionListener{
 //bank.management.system.login is not abstract and does not override abstract method actionPerformed(java.awt.event.ActionEvent) in java.awt.event.ActionListener
@@ -79,7 +81,19 @@ public class login extends JFrame implements ActionListener{
         // You will handle button clicks here. For example:
         // if (aet.getActionCommand().equals("Clear")) { ... }
         if (aet.getSource()==loginButton){
-
+            conn connection=new conn();
+            String cardNumber=cardTextField.getText();
+            String pinno=pinTextField.getText();
+            String query="select * from login where cardnumber = '"+cardNumber+"' and pin_no = '"+pinno+"'";
+            try{
+                ResultSet rs=connection.s.executeQuery(query);
+                if(rs.next()){
+                    setVisible(false);
+                    new Transactions(cardNumber,pinno).setVisible(true);
+                } else JOptionPane.showMessageDialog(null,"Incorrect Card Number or PIN entered.");
+            } catch (Exception e) {
+                System.out.println(e);
+            }
         }else if(aet.getSource()==clear){
             cardTextField.setText("");
             pinTextField.setText("");
