@@ -33,14 +33,12 @@ public class Withdraw extends JFrame implements ActionListener{
 
         wdraw= new JButton("Withdraw");
         wdraw.setBounds(390,350,100,25);
-//        wdraw.setBackground(Color.WHITE);
         wdraw.setForeground(Color.BLACK);
         wdraw.addActionListener(this);
         image.add(wdraw);
 
         back= new JButton("Back");
         back.setBounds(390,380,100,25);
-//        back.setBackground(Color.WHITE);
         back.setForeground(Color.BLACK);
         back.addActionListener(this);
         image.add(back);

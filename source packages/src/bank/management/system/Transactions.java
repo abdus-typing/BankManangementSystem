@@ -9,6 +9,8 @@ public class Transactions extends JFrame implements ActionListener{
     JButton deposit,fastcash,withdrawal,ministatement, balEnquiry,pinchange,exit;
     String cardNumber, pinno;
     Transactions(String cardNumber, String pinno){
+        this.cardNumber=cardNumber;
+        this.pinno=pinno;
         setLayout(null);
         ImageIcon i1=new ImageIcon(ClassLoader.getSystemResource("logos/atm.jpg"));
         Image i2= i1.getImage().getScaledInstance(900,800, Image.SCALE_DEFAULT);
@@ -67,7 +69,7 @@ public class Transactions extends JFrame implements ActionListener{
         if(ae.getSource()==exit){
             System.exit(0);
         } else if (ae.getSource()==deposit) {
-            setVisible(true);
+            setVisible(false);
             new Deposit(cardNumber,pinno).setVisible(true);
         }
     }
