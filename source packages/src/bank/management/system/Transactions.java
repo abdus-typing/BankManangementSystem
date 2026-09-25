@@ -32,6 +32,7 @@ public class Transactions extends JFrame implements ActionListener{
 
         fastcash= new JButton("Fast Cash");
         fastcash.setBounds(360,368,150,25); //only gap adjusted i.e x =160+deposit width +extra
+        fastcash.addActionListener(this);
         image.add(fastcash);
 
         withdrawal= new JButton("Cash Withdrawal");
@@ -71,6 +72,15 @@ public class Transactions extends JFrame implements ActionListener{
         } else if (ae.getSource()==deposit) {
             setVisible(false);
             new Deposit(cardNumber,pinno).setVisible(true);
+        } else if(ae.getSource()==withdrawal){
+            setVisible(false);
+            new Withdraw(cardNumber,pinno).setVisible(true);
+        } else if(ae.getSource()==fastcash){
+            setVisible(false);
+            new fastCash(cardNumber,pinno).setVisible(true);
+        } else if(ae.getSource()==pinchange){
+            setVisible(false);
+            new changePIN(cardNumber,pinno).setVisible(true);
         }
     }
 
