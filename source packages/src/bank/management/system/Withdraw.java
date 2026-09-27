@@ -50,28 +50,64 @@ public class Withdraw extends JFrame implements ActionListener{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     }
-    public void actionPerformed(ActionEvent ae){
-        if(ae.getSource()==wdraw){
-            String number=amt.getText();
-            Date date=new Date();
-            if(number.isEmpty()){
-                JOptionPane.showMessageDialog(null, "The withdrawal amount cannnot be empty");
-            }else{
-                try{
-                    conn con=new conn();
-                    String query="Insert into bank values('" + cardnumber + "','" + pinno + "', '" + date + "','Withdraw','" + number +"')";
-                    con.s.executeUpdate(query);
-                    JOptionPane.showMessageDialog(null, "Rs. "+number+" has been withdrawn successfull");
+    public void actionPerformed(ActionEvent ae) {
+        if (ae.getSource() == wdraw) {
+            String number = amt.getText();
+            Date date = new Date();
+
+            if (number.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "The withdrawal amount cannot be empty");
+            } else {
+                try {
+                    conn con = new conn();
+                    int withdrawAmount = Integer.parseInt(number);
+                    int balance = 0;
+
+                    // 1. Calculate the current balance first
+                    String selectQuery = "select * from bank where card_no = ? and pin = ?";
+                    PreparedStatement selectPs = con.c.prepareStatement(selectQuery);
+                    selectPs.setString(1, cardnumber);
+                    selectPs.setString(2, pinno);
+                    ResultSet rs = selectPs.executeQuery();
+
+                    while (rs.next()) {
+                        if (rs.getString("type").equals("Deposit")) {
+                            balance += Integer.parseInt(rs.getString("amount"));
+                        } else {
+                            // Assuming any non-Deposit is a withdrawal
+                            balance -= Integer.parseInt(rs.getString("amount"));
+                        }
+                    }
+
+                    // 2. Check if the user has enough money
+                    if (balance < withdrawAmount) {
+                        JOptionPane.showMessageDialog(null, "Insufficient Balance. Current Balance: Rs " + balance);
+                        return; // Stop execution, do not proceed to insertion
+                    }
+
+                    // 3. If balance is sufficient, insert the withdrawal record
+                    String insertQuery = "Insert into bank values(?,?,?,?,?)";
+                    PreparedStatement insertPs = con.c.prepareStatement(insertQuery);
+                    insertPs.setString(1, cardnumber);
+                    insertPs.setString(2, pinno);
+                    insertPs.setString(3, date.toString());
+                    insertPs.setString(4, "Withdrawal");
+                    insertPs.setString(5, number);
+                    insertPs.executeUpdate();
+
+                    JOptionPane.showMessageDialog(null, "Rs. " + number + " has been withdrawn successfully");
                     setVisible(false);
                     new Transactions(cardnumber, pinno).setVisible(true);
-                }catch(Exception e){
-                    System.out.println(e);
+
+                } catch (NumberFormatException nfe) {
+                    JOptionPane.showMessageDialog(null, "Please enter a valid numeric amount");
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
-
-        }else if(ae.getSource()==back){
+        } else if (ae.getSource() == back) {
             setVisible(false);
-            new Transactions(cardnumber,pinno).setVisible(true);
+            new Transactions(cardnumber, pinno).setVisible(true);
         }
     }
     public static void main(String[] args) {

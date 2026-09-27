@@ -84,9 +84,12 @@ public class login extends JFrame implements ActionListener{
             conn connection=new conn();
             String cardNumber=cardTextField.getText();
             String pinno=pinTextField.getText();
-            String query="select * from login where cardnumber = '"+cardNumber+"' and pin_no = '"+pinno+"'";
+            String query="select * from login where cardnumber = ? and pin_no = ?";
             try{
-                ResultSet rs=connection.s.executeQuery(query);
+                PreparedStatement ps = connection.c.prepareStatement(query);
+                ps.setString(1, cardNumber);
+                ps.setString(2, pinno);
+                ResultSet rs = ps.executeQuery();
                 if(rs.next()){
                     setVisible(false);
                     new Transactions(cardNumber,pinno).setVisible(true);

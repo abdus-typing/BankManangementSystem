@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 //import java.awt.event.ActionListener; we have already imported the above line
 import java.util.*;
+import java.sql.*;
 public class SignupTwo extends JFrame implements ActionListener {
     long random;
     JTextField panTextField, aadhaarTextField;
@@ -180,8 +181,19 @@ public class SignupTwo extends JFrame implements ActionListener {
         try{
             {
                 conn c= new conn();
-                String query= "insert into signuptwo values ('"+formno+"','"+religion+"', '"+category+"','"+education+"','"+occupation+"','"+income+"','"+aadhar+"','"+pan+"','"+seniorC+"','"+existingAc+"')";
-                c.s.executeUpdate(query);
+                String query= "insert into signuptwo values (?,?,?,?,?,?,?,?,?,?)";
+                PreparedStatement ps = c.c.prepareStatement(query);
+                ps.setString(1, formno);
+                ps.setString(2, religion);
+                ps.setString(3, category);
+                ps.setString(4, education);
+                ps.setString(5, occupation);
+                ps.setString(6, income);
+                ps.setString(7, pan);
+                ps.setString(8, aadhar);
+                ps.setString(9, seniorC);
+                ps.setString(10, existingAc);
+                ps.executeUpdate();
 
                 //next signup page
                 setVisible(false);

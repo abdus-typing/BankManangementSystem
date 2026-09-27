@@ -3,6 +3,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.date;
+import java.sql.*;
 public class Deposit extends JFrame implements ActionListener{
     JTextField amt;
     JButton deposit, back;
@@ -55,13 +57,27 @@ public class Deposit extends JFrame implements ActionListener{
                 JOptionPane.showMessageDialog(null,"Please enter the amount to deposit. It can't be zero");
             }else{
                 try {
+                    int depositAmount=Integer.parseInt(number);
+                    if(depositAmount<=0){
+                        JOptionPane.showMessageDialog(null,"Please enter an amount greater than zero.");
+                        return;
+                    }
                     conn con = new conn();
-                    String query = "insert into bank values ('" + cardnumber + "','" + pinno + "', '" + date + "','Deposit','" + number + "')";
-                    con.s.executeUpdate(query);
+                    String query = "insert into bank values (?,?,?,?,?)";
+                    PreparedStatement ps = con.c.prepareStatement(query);
+                    ps.setString(1, cardnumber);
+                    ps.setString(2, pinno);
+                    ps.setString(3, date.toString());
+                    ps.setString(4, "Deposit");
+                    ps.setString(5, number);
+                    ps.executeUpdate();
                     JOptionPane.showMessageDialog(null, "Rs. " + number + " deposited successfully.");
                     setVisible(false);
                     new Transactions(cardnumber,pinno).setVisible(true);
                     }
+                catch(NumberFormatException ne){
+                    JOptionPane.showMessageDialog(null, "Please enter valid numeric amount");
+                }
                 catch(Exception e){
                         System.out.println(e);
                     }

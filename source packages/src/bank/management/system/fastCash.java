@@ -101,7 +101,11 @@ public class fastCash extends JFrame implements ActionListener {
             String amount=((JButton)ae.getSource()).getText().substring(3).trim(); //Rs. 2000-> 2 is at index 3
             conn con=new conn();
             try{
-                ResultSet res=con.s.executeQuery("Select * from bank where pin='"+pinno+"'");
+                String selectQuery = "Select * from bank where card_no=? and pin=?";
+                PreparedStatement selectPs = con.c.prepareStatement(selectQuery);
+                selectPs.setString(1, cardnumber);
+                selectPs.setString(2, pinno);
+                ResultSet res = selectPs.executeQuery();
                 int bal=0;
                 while(res.next()){
                     if(res.getString("type").equals("Deposit")){
@@ -116,8 +120,14 @@ public class fastCash extends JFrame implements ActionListener {
                 }
                 Date date=new Date();
 
-                String query= "insert into bank values('"+cardnumber+"','"+pinno+"','"+date+"','Withdrawal','"+amount+"')";
-                con.s.executeUpdate(query);
+                String insertQuery = "insert into bank values(?,?,?,?,?)";
+                PreparedStatement insertPs = con.c.prepareStatement(insertQuery);
+                insertPs.setString(1, cardnumber);
+                insertPs.setString(2, pinno);
+                insertPs.setString(3, date.toString());
+                insertPs.setString(4, "Withdrawal");
+                insertPs.setString(5, amount);
+                insertPs.executeUpdate();
                 JOptionPane.showMessageDialog(null, "Rs. "+amount+" debit successful.");
 
                 setVisible(false);

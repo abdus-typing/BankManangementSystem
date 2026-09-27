@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Random;
+import java.sql.*;
 
 public class signupThree extends JFrame implements ActionListener{
     JRadioButton Saving, current, fd, recurring;
@@ -178,15 +179,26 @@ public class signupThree extends JFrame implements ActionListener{
                 JOptionPane.showMessageDialog(null, "Please check the declaration to proceed.");
             } else{
                 conn c=new conn();
-                String query1= "INSERT INTO signupthree (Formno, AccountType, cardNumber, pin_no, servicesRequired) VALUES ('" + formno + "', '" + AccType+ "', '" + cardnumber + "', '" + pinno + "', '" + facility + "')";
-                String query2= "insert into login values('"+formno+"', '"+cardnumber+"', '"+pinno+"')";
-                System.out.println("Executed: " + query1);
-                c.s.executeUpdate(query1);
-                c.s.executeUpdate(query2);
+
+                String query1= "INSERT INTO signupthree (Formno, AccountType, cardNumber, pin_no, servicesRequired) VALUES (?,?,?,?,?)";
+                PreparedStatement ps1 = c.c.prepareStatement(query1);
+                ps1.setString(1, formno);
+                ps1.setString(2, AccType);
+                ps1.setString(3, cardnumber);
+                ps1.setString(4, pinno);
+                ps1.setString(5, facility);
+                ps1.executeUpdate();
+
+                String query2= "insert into login values(?,?,?)";
+                PreparedStatement ps2 = c.c.prepareStatement(query2);
+                ps2.setString(1, formno);
+                ps2.setString(2, cardnumber);
+                ps2.setString(3, pinno);
+                ps2.executeUpdate();
 
                 JOptionPane.showMessageDialog(null, "Card Number: "+cardnumber+ " \n Pin Number: "+pinno);
                 setVisible(false);
-                new Deposit(cardnumber,pinno).setVisible(false);
+                new Deposit(cardnumber,pinno).setVisible(true);
             }
         }catch(Exception e){
             System.out.println(e);

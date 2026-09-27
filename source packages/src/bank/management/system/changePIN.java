@@ -3,10 +3,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.event.ActionListener;
+import java.sql.*;
 
 public class changePIN extends JFrame implements ActionListener {
     JButton cancel, change;
-    JTextField pinTextfield,pin2Textfield;
+    JPasswordField pinPassfield,pin2Passfield;
     String cardnumber, pinno;
 
     changePIN(String cardnumber, String pinno){
@@ -31,9 +32,9 @@ public class changePIN extends JFrame implements ActionListener {
         pintext.setBounds(180,360,200,20);
         pintext.setFont(new Font("Raleway", Font.BOLD, 12));
         image.add(pintext);
-        pinTextfield=new JTextField();
-        pinTextfield.setBounds(260,360,180,22);
-        image.add(pinTextfield);
+        pinPassfield=new JPasswordField();
+        pinPassfield.setBounds(260,360,180,22);
+        image.add(pinPassfield);
 
 
         JLabel confirmpin=new JLabel("Confirm PIN: ");
@@ -41,9 +42,9 @@ public class changePIN extends JFrame implements ActionListener {
         confirmpin.setBounds(180,390,200,20);
         confirmpin.setFont(new Font("Raleway", Font.BOLD, 12));
         image.add(confirmpin);
-        pin2Textfield=new JTextField();
-        pin2Textfield.setBounds(260,390,180,22);
-        image.add(pin2Textfield);
+        pin2Passfield=new JPasswordField();
+        pin2Passfield.setBounds(260,390,180,22);
+        image.add(pin2Passfield);
 
         change=new JButton("Change");
         change.setBackground(Color.WHITE);
@@ -71,27 +72,44 @@ public class changePIN extends JFrame implements ActionListener {
         }
         else{ //button change
             try{
-                String newpin=pinTextfield.getText();
-                String repin=pin2Textfield.getText();
+                String newpin=new String(pinPassfield.getPassword());
+                String repin=new String(pin2Passfield.getPassword());
                 if(!newpin.equals(repin)){
                     JOptionPane.showMessageDialog(null,"Entered PINs do not match.");
+                    return;
                 }
                 if(newpin.isEmpty()){
                     JOptionPane.showMessageDialog(null,"please enter PIN.");
+                    return;
                 }
                 if(repin.isEmpty()){
                     JOptionPane.showMessageDialog(null,"please confirm PIN.");
+                    return;
                 }
-                conn con=new conn(); //to change existing pin to all db tables
-                String queryOne="update bank set pin='"+repin+"' where pin='"+pinno+"'";
-                String querytwo="update login set pin_no='"+repin+"' where pin_no='"+pinno+"'";
-                String queryThree="update signupthree set pin_no='"+repin+"' where pin_no='"+pinno+"'";
-                con.s.executeUpdate(queryOne);
-                con.s.executeUpdate(querytwo);
-                con.s.executeUpdate(queryThree);
+                conn con=new conn();
+
+                String queryOne="update bank set pin=? where card_no=?";
+                PreparedStatement psOne = con.c.prepareStatement(queryOne);
+                psOne.setString(1, repin);
+                psOne.setString(2, cardnumber);
+                psOne.executeUpdate();
+
+                String queryTwo="update login set pin_no=? where cardNumber=?";
+                PreparedStatement psTwo = con.c.prepareStatement(queryTwo);
+                psTwo.setString(1, repin);
+                psTwo.setString(2, cardnumber);
+                psTwo.executeUpdate();
+
+                String queryThree="update signupthree set pin_no=? where cardNumber=?";
+                PreparedStatement psThree = con.c.prepareStatement(queryThree);
+                psThree.setString(1, repin);
+                psThree.setString(2, cardnumber);
+                psThree.executeUpdate();
+
+
                 JOptionPane.showMessageDialog(null, "PIN Change successful.");
                 setVisible(false);
-                new Transactions(cardnumber,pinno).setVisible(true);
+                new Transactions(cardnumber,repin).setVisible(true);
 
 
             }catch(Exception e){

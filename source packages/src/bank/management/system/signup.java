@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 //import java.awt.event.ActionListener;
 import java.util.*;
+import java.sql.*;
 import com.toedter.calendar.JDateChooser;
 public class signup extends JFrame implements ActionListener {
     long appno;
@@ -210,8 +211,22 @@ public class signup extends JFrame implements ActionListener {
             }
             else{
                 conn c= new conn();
-                String query= "insert into signup values ('"+formno+"', '"+name+"','"+fname+"','"+dob+"','"+gender+"','"+phone+"','"+email+"','"+marital+"','"+address+"','"+city+"','"+pin+"','"+state+"','"+country+"')";
-                c.s.executeUpdate(query);
+                String query= "insert into signup values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                PreparedStatement ps = c.c.prepareStatement(query);
+                ps.setString(1, formno);
+                ps.setString(2, name);
+                ps.setString(3, fname);
+                ps.setString(4, dob);
+                ps.setString(5, gender);
+                ps.setString(6, phone);
+                ps.setString(7, email);
+                ps.setString(8, marital);
+                ps.setString(9, address);
+                ps.setString(10, city);
+                ps.setString(11, pin);
+                ps.setString(12, state);
+                ps.setString(13, country);
+                ps.executeUpdate();
 
                 setVisible(false);
                 new SignupTwo(formno).setVisible(true);
