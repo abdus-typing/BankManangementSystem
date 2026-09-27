@@ -3,7 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.util.date;
+import java.util.Date;
 import java.sql.*;
 public class Deposit extends JFrame implements ActionListener{
     JTextField amt;
